@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button, Alert } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as LocalAuthentication from "expo-local-authentication";
 import { fetchData } from "../utils/FetchApi.js";
 
 const MapScreen = () => {
@@ -8,25 +10,43 @@ const MapScreen = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const getHotspots = async () => {
-      try {
-        const data = await fetchData();
-        console.log("Fetched data:", data); // Log the fetched data
+    const authenticate = async () => {
+      const hasHardware = await LocalAuthentication.hasHardwareAsync();
+      const supported = await LocalAuthentication.supportedAuthenticationTypesAsync();
+      if (hasHardware && supported.length > 0) {
+        const authResult = await LocalAuthentication.authenticateAsync();
+        if (!authResult.success) {
+          Alert.alert("Authentication failed", "Please try again");
+          return;
+        }
+      }
+      loadHotspots();
+    };
 
-        if (Array.isArray(data)) {
-          console.log("Hotspots:", data); // Log the hotspots array
-          setHotspots(data);
+    const loadHotspots = async () => {
+      try {
+        const storedHotspots = await AsyncStorage.getItem("hotspots");
+        if (storedHotspots !== null) {
+          setHotspots(JSON.parse(storedHotspots));
         } else {
-          setError("Invalid data structure received");
-          console.error("Invalid data structure received:", data); // Log invalid data structure
+          const data = await fetchData();
+          console.log("Fetched data:", data);
+          if (Array.isArray(data)) {
+            console.log("Hotspots:", data);
+            setHotspots(data);
+            await AsyncStorage.setItem("hotspots", JSON.stringify(data));
+          } else {
+            setError("Invalid data structure received");
+            console.error("Invalid data structure received:", data);
+          }
         }
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching data:", err); // Log the error
+        console.error("Error fetching data:", err);
       }
     };
 
-    getHotspots();
+    authenticate();
   }, []);
 
   return (
@@ -37,7 +57,7 @@ const MapScreen = () => {
         </View>
       ) : (
         <MapView
-          style={styles.map} // Use styles for the map
+          style={styles.map}
           initialRegion={{
             latitude: 51.917404,
             longitude: 4.484861,
@@ -71,11 +91,11 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     fontSize: 16,
   },
 });
