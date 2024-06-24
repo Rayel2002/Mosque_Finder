@@ -36,7 +36,7 @@ const SettingsStack = () => {
       <Stack.Screen
         name="SettingsMain"
         component={SettingsScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen name="AuthFailed" component={AuthFailedScreen} />
     </Stack.Navigator>
