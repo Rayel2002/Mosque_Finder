@@ -2,12 +2,13 @@ import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-const SearchBar = ({ searchTerm, onSearchChange }) => {
+const SearchBar = ({ searchTerm, onSearchChange, containerStyle, inputStyle, borderColor }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle, { borderColor }]}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, inputStyle]}
         placeholder="Search hotspots..."
+        placeholderTextColor={inputStyle.color}
         value={searchTerm}
         onChangeText={onSearchChange}
       />
@@ -18,20 +19,20 @@ const SearchBar = ({ searchTerm, onSearchChange }) => {
 SearchBar.propTypes = {
   searchTerm: PropTypes.string.isRequired,
   onSearchChange: PropTypes.func.isRequired,
+  containerStyle: PropTypes.object,
+  inputStyle: PropTypes.object,
+  borderColor: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#f0f0f0',
+    borderWidth: 1,
+    borderRadius: 5,
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
     paddingLeft: 10,
-    backgroundColor: '#fff',
   },
 });
 

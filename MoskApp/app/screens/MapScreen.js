@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import MapView from 'react-native-maps';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
-import { fetchData } from '../utils/FetchApi.js';
-import HotspotMarker from '../components/HotspotMarker.js';
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ActivityIndicator, Alert } from "react-native";
+import MapView, { Marker, Callout } from "react-native-maps";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from "expo-location";
+import { fetchData } from "../utils/FetchApi.js";
+import { useTheme } from "../hooks/useTheme.js"; // Import useTheme hook
 
-const MapScreen = () => {
+const MapScreen = ({ route }) => {
+  const { theme } = useTheme(); // Get the current theme
   const [hotspots, setHotspots] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [location, setLocation] = useState(null);
+  const [selectedHotspot, setSelectedHotspot] = useState(null);
 
   useEffect(() => {
+    if (route.params?.selectedHotspot) {
+      setSelectedHotspot(route.params.selectedHotspot);
+    }
+
     const loadHotspots = async () => {
       try {
         const storedHotspots = await AsyncStorage.getItem('hotspots');
@@ -45,28 +51,48 @@ const MapScreen = () => {
 
     getLocation();
     loadHotspots();
-  }, []);
+  }, [route.params]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={theme.textColor} />
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Error: {error}</Text>
+          <Text style={[styles.errorText, { color: theme.textColor }]}>Error: {error}</Text>
         </View>
       ) : (
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: location?.latitude || 51.917404,
-            longitude: location?.longitude || 4.484861,
+            latitude: selectedHotspot ? selectedHotspot.latitude : location?.latitude || 51.917404,
+            longitude: selectedHotspot ? selectedHotspot.longitude : location?.longitude || 4.484861,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          region={{
+            latitude: selectedHotspot ? selectedHotspot.latitude : location?.latitude || 51.917404,
+            longitude: selectedHotspot ? selectedHotspot.longitude : location?.longitude || 4.484861,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
         >
           {hotspots.map((hotspot, index) => (
-            <HotspotMarker key={index} hotspot={hotspot} />
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: hotspot.latitude,
+                longitude: hotspot.longitude,
+              }}
+              pinColor={selectedHotspot && selectedHotspot.id === hotspot.id ? 'blue' : 'red'}
+            >
+              <Callout>
+                <View>
+                  <Text style={{ fontWeight: 'bold' }}>{hotspot.title}</Text>
+                  <Text>{hotspot.description}</Text>
+                </View>
+              </Callout>
+            </Marker>
           ))}
         </MapView>
       )}

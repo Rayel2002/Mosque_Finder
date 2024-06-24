@@ -1,9 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, Animated, Dimensions } from 'react-native';
-import { useTheme } from '../context/ThemeContext.js';
-import { authenticateUser } from '../components/Authenticate';
-import { useNavigation } from '@react-navigation/native';
-import { themes } from '../utils/Themes.js'; // Import themes from the external file
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  ScrollView,
+  Animated,
+  Dimensions,
+} from "react-native";
+import { useTheme } from "../hooks/useTheme";
+import { authenticateUser } from "../components/Authenticate";
+import { useNavigation } from "@react-navigation/native";
+import { themes } from "../utils/Themes";
 
 const SettingsScreen = () => {
   const { theme, toggleTheme } = useTheme();
@@ -18,11 +27,11 @@ const SettingsScreen = () => {
         const isAuthenticated = await authenticateUser();
         setIsAuthenticated(isAuthenticated);
         if (!isAuthenticated) {
-          throw new Error('Authentication failed');
+          throw new Error("Authentication failed");
         }
       } catch (error) {
-        Alert.alert('Authentication error', error.message, [{ text: 'OK' }]);
-        navigation.navigate('AuthFailed');
+        Alert.alert("Authentication error", error.message, [{ text: "OK" }]);
+        navigation.navigate("AuthFailed");
       }
     };
     authenticate();
@@ -57,26 +66,39 @@ const SettingsScreen = () => {
     outputRange: [0, 1],
   });
 
-  const currentThemeKey = Object.keys(themes).find(key => 
-    themes[key].backgroundColor === theme.backgroundColor && 
-    themes[key].textColor === theme.textColor
+  const currentThemeKey = Object.keys(themes).find(
+    (key) =>
+      themes[key].backgroundColor === theme.backgroundColor &&
+      themes[key].textColor === theme.textColor
   );
 
-  const currentThemeName = currentThemeKey ? themes[currentThemeKey].name : 'Unknown';
+  const currentThemeName = currentThemeKey
+    ? themes[currentThemeKey].name
+    : "Unknown";
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+    <View
+      style={[styles.container, { backgroundColor: theme.backgroundColor }]}
+    >
       {isAuthenticated ? (
         <>
           <TouchableOpacity
-            style={styles.selectThemeButton}
+            style={[
+              styles.selectThemeButton,
+              { backgroundColor: theme.buttonColor },
+            ]}
             onPress={toggleShowThemes}
           >
-            <Text style={[styles.buttonText, { color: theme.textColor }]}>
+            <Text style={[styles.buttonText, { color: theme.buttonTextColor }]}>
               {`${currentThemeName}`}
             </Text>
           </TouchableOpacity>
-          <Animated.View style={[styles.scrollContainer, { transform: [{ scale }], opacity }]}>
+          <Animated.View
+            style={[
+              styles.scrollContainer,
+              { transform: [{ scale }], opacity },
+            ]}
+          >
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -87,20 +109,20 @@ const SettingsScreen = () => {
                   key={key}
                   style={[
                     styles.themeSquare,
-                    theme.backgroundColor === themes[key].backgroundColor && styles.selectedTheme,
+                    theme.backgroundColor === themes[key].backgroundColor &&
+                      styles.selectedTheme,
                   ]}
                   onPress={() => handleThemeChange(key)}
                 >
                   {themes[key].colors.map((color, index) => (
                     <View
                       key={index}
-                      style={[
-                        styles.colorBlock,
-                        { backgroundColor: color },
-                      ]}
+                      style={[styles.colorBlock, { backgroundColor: color }]}
                     />
                   ))}
-                  <Text style={[styles.themeText, { color: themes[key].textColor }]}>
+                  <Text
+                    style={[styles.themeText, { color: themes[key].textColor }]}
+                  >
                     {themes[key].name}
                   </Text>
                 </TouchableOpacity>
@@ -117,13 +139,13 @@ const SettingsScreen = () => {
   );
 };
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    justifyContent: "flex-start",
+    alignItems: "center",
     paddingTop: 20,
   },
   text: {
@@ -133,9 +155,8 @@ const styles = StyleSheet.create({
   selectThemeButton: {
     width: width * 0.9,
     padding: 15,
-    backgroundColor: '#4CAF50', // Shade of green
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   buttonText: {
@@ -145,34 +166,34 @@ const styles = StyleSheet.create({
     height: 120, // Set a fixed height to prevent layout issues
   },
   scrollView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   themeSquare: {
     width: 100,
     height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: 10,
     borderRadius: 5,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
   colorBlock: {
     flex: 1,
-    width: '100%',
+    width: "100%",
   },
   themeText: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 5,
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
   },
   selectedTheme: {
     borderWidth: 2,
-    borderColor: '#6200ee',
+    borderColor: "#6200ee",
   },
 });
 

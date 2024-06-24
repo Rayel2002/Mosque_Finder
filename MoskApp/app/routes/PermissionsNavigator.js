@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import PermissionsDeniedScreen from '../screens/PermissionsDeniedScreen.js';
 import { requestForegroundPermissionsAsync } from 'expo-location';
-import AppStack from './AppStack.js';  // Assume AppStack is exported from another file
+import PermissionsDeniedScreen from '../screens/PermissionsDeniedScreen.js';
+import AppStack from './AppStack.js';
+import { useTheme } from '../hooks/useTheme.js';
 
 const Stack = createStackNavigator();
 
 const PermissionsNavigator = () => {
+  const { theme } = useTheme();
   const [permissionsGranted, setPermissionsGranted] = useState(null);
 
   useEffect(() => {
@@ -19,20 +20,28 @@ const PermissionsNavigator = () => {
     checkPermissions();
   }, []);
 
+  if (permissionsGranted === null) {
+    return <LoadingScreen />; // Avoid inline function for component
+  }
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {permissionsGranted === null ? (
-          // Loading state can be handled here
-          <Stack.Screen name="Loading" component={() => null} />
-        ) : permissionsGranted ? (
-          <Stack.Screen name="Main" component={AppStack} options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="PermissionsDenied" component={PermissionsDeniedScreen} options={{ headerShown: false }} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: theme.backgroundColor },
+        headerTintColor: theme.textColor,
+      }}
+    >
+      {permissionsGranted ? (
+        <Stack.Screen name="Main" component={AppStack} options={{ headerShown: false }} />
+      ) : (
+        <Stack.Screen name="PermissionsDenied" component={PermissionsDeniedScreen} options={{ headerShown: false }} />
+      )}
+    </Stack.Navigator>
   );
+};
+
+const LoadingScreen = () => {
+  return null; // This can be replaced with an actual loading component if needed
 };
 
 export default PermissionsNavigator;

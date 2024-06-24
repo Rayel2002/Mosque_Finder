@@ -1,8 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "../hooks/useTheme"; // Import useTheme hook
 
 const AuthFailedScreen = () => {
+  const { theme } = useTheme(); // Get the current theme
   const navigation = useNavigation();
 
   const handleRetry = () => {
@@ -10,9 +12,9 @@ const AuthFailedScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.errorText}>Authentication Failed</Text>
-      <Button title="Retry" onPress={handleRetry} />
+    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+      <Text style={[styles.errorText, { color: theme.textColor }]}>Authentication Failed</Text>
+      <Button title="Retry" onPress={handleRetry} color={theme.buttonColor} />
     </View>
   );
 };
@@ -22,11 +24,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
   },
   errorText: {
     fontSize: 20,
-    color: "red",
     marginBottom: 20,
   },
 });

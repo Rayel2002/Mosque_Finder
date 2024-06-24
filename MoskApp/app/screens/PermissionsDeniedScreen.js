@@ -2,8 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import { requestForegroundPermissionsAsync } from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../hooks/useTheme'; // Import useTheme hook
 
 const PermissionsDeniedScreen = () => {
+  const { theme } = useTheme(); // Get the current theme
   const navigation = useNavigation();
 
   const handleRetry = async () => {
@@ -16,10 +18,12 @@ const PermissionsDeniedScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.errorText}>Permission Denied</Text>
-      <Text style={styles.text}>Location permission is required to use this app. Enable location permissions in your device settings.</Text>
-      <Button title="Retry" onPress={handleRetry} />
+    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+      <Text style={[styles.errorText, { color: theme.textColor }]}>Permission Denied</Text>
+      <Text style={[styles.text, { color: theme.textColor }]}>
+        Location permission is required to use this app. Enable location permissions in your device settings.
+      </Text>
+      <Button title="Retry" onPress={handleRetry} color={theme.buttonColor} />
     </View>
   );
 };
@@ -29,11 +33,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
   },
   errorText: {
     fontSize: 20,
-    color: 'red',
     marginBottom: 20,
   },
   text: {
