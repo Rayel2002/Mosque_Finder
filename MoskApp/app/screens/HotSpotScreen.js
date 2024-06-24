@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import HotspotItem from '../components/HotspotItem.js';
+import React, { useEffect, useState } from "react";
+import { View, FlatList, StyleSheet, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import HotspotItem from "../components/HotspotItem.js";
 
 const HotspotListScreen = ({ navigation }) => {
   const [hotspots, setHotspots] = useState([]);
@@ -9,7 +9,7 @@ const HotspotListScreen = ({ navigation }) => {
   useEffect(() => {
     const loadHotspots = async () => {
       try {
-        const storedHotspots = await AsyncStorage.getItem('hotspots');
+        const storedHotspots = await AsyncStorage.getItem("hotspots");
         if (storedHotspots !== null) {
           const parsedHotspots = JSON.parse(storedHotspots);
 
@@ -22,8 +22,8 @@ const HotspotListScreen = ({ navigation }) => {
           setHotspots(validHotspots);
         }
       } catch (error) {
-        console.error('Error loading hotspots:', error);
-        Alert.alert('Error', 'There was an error loading the hotspots.');
+        console.error("Error loading hotspots:", error);
+        Alert.alert("Error", "There was an error loading the hotspots.");
       }
     };
 
@@ -33,7 +33,7 @@ const HotspotListScreen = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <HotspotItem
       item={item}
-      onPress={() => navigation.navigate('Map', { hotspot: item })}
+      onPress={() => navigation.navigate("Map", { hotspot: item })}
     />
   );
 
