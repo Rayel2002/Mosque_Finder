@@ -5,7 +5,7 @@ import MapScreen from "../screens/MapScreen.js";
 import SettingsScreen from "../screens/SettingsScreen.js";
 import HotspotScreen from "../screens/HotSpotScreen.js";
 import AuthFailedScreen from "../screens/AuthFailedScreen.js";
-import { useTheme } from "../context/ThemeContext.js";
+import { useTheme } from "../hooks/useTheme.js";
 import { Ionicons } from "@expo/vector-icons"; // Import icons from @expo/vector-icons
 
 const Tab = createBottomTabNavigator();

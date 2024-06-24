@@ -4,7 +4,7 @@ import { Entypo } from "@expo/vector-icons";
 import { preventAutoHideAsync, hideAsync } from "expo-splash-screen";
 import { loadAsync } from "expo-font";
 import { fetchData } from "../utils/FetchApi.js";
-import { useTheme } from "../context/ThemeContext"; // Import useTheme hook
+import { useTheme } from "../hooks/useTheme.js"; // Import useTheme hook
 
 // Prevent the splash screen from auto hiding
 preventAutoHideAsync();

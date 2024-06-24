@@ -4,7 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 import { fetchData } from '../utils/FetchApi.js';
-import { useTheme } from '../context/ThemeContext.js';
+import { useTheme } from '../hooks/useTheme.js';
 import HotspotMarker from '../components/HotspotMarker.js';
 
 const MapScreen = ({ route }) => {

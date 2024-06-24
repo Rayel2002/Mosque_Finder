@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import { requestForegroundPermissionsAsync } from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '../context/ThemeContext'; // Import useTheme hook
+import { useTheme } from '../hooks/useTheme'; // Import useTheme hook
 
 const PermissionsDeniedScreen = () => {
   const { theme } = useTheme(); // Get the current theme

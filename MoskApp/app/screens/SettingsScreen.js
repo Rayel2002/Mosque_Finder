@@ -9,7 +9,7 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../hooks/useTheme";
 import { authenticateUser } from "../components/Authenticate";
 import { useNavigation } from "@react-navigation/native";
 import { themes } from "../utils/Themes";

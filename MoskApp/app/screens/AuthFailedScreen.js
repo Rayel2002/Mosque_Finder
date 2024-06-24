@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useTheme } from "../context/ThemeContext"; // Import useTheme hook
+import { useTheme } from "../hooks/useTheme"; // Import useTheme hook
 
 const AuthFailedScreen = () => {
   const { theme } = useTheme(); // Get the current theme

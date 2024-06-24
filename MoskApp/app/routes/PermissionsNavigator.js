@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { requestForegroundPermissionsAsync } from 'expo-location';
 import PermissionsDeniedScreen from '../screens/PermissionsDeniedScreen.js';
 import AppStack from './AppStack.js';
-import { useTheme } from '../context/ThemeContext.js';
+import { useTheme } from '../hooks/useTheme.js';
 
 const Stack = createStackNavigator();
 
