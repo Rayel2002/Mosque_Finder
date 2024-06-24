@@ -1,16 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { View, Text, StyleSheet, Button, Alert } from 'react-native';
+import { requestForegroundPermissionsAsync } from 'expo-location';
+import { useNavigation } from '@react-navigation/native';
 
 const PermissionsDeniedScreen = () => {
   const navigation = useNavigation();
-  const { params: { onRetry } } = useRoute();
+
+  const handleRetry = async () => {
+    const { status } = await requestForegroundPermissionsAsync();
+    if (status === 'granted') {
+      navigation.replace('Main');
+    } else {
+      Alert.alert('Permission denied', 'Location permission is still denied. Enable location permissions in your device settings.', [{ text: 'OK' }]);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.errorText}>Permissions Denied</Text>
-      <Text style={styles.text}>You need to grant location permissions to use this app.</Text>
-      <Button title="Retry" onPress={onRetry} />
+      <Text style={styles.errorText}>Permission Denied</Text>
+      <Text style={styles.text}>Location permission is required to use this app. Enable location permissions in your device settings.</Text>
+      <Button title="Retry" onPress={handleRetry} />
     </View>
   );
 };

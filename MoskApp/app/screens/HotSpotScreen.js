@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HotspotItem from "../components/HotspotItem.js";
 
-const HotspotListScreen = ({ navigation }) => {
+const HotspotScreen = ({ navigation }) => {
   const [hotspots, setHotspots] = useState([]);
 
   useEffect(() => {
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HotspotListScreen;
+export default HotspotScreen;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
@@ -16,41 +16,30 @@ const MapScreen = () => {
     const loadHotspots = async () => {
       try {
         const storedHotspots = await AsyncStorage.getItem('hotspots');
-        if (storedHotspots !== null) {
+        if (storedHotspots) {
           setHotspots(JSON.parse(storedHotspots));
         } else {
           const data = await fetchData();
-          console.log('Fetched data:', data);
-          if (Array.isArray(data)) {
-            console.log('Hotspots:', data);
-            setHotspots(data);
-            await AsyncStorage.setItem('hotspots', JSON.stringify(data));
-          } else {
-            setError('Invalid data structure received');
-            console.error('Invalid data structure received:', data);
-          }
+          setHotspots(data);
+          await AsyncStorage.setItem('hotspots', JSON.stringify(data));
         }
       } catch (err) {
         setError(err.message);
-        console.error('Error fetching data:', err);
+        Alert.alert('Error loading hotspots', err.message, [{ text: 'OK' }]);
       } finally {
         setIsLoading(false);
       }
     };
 
     const getLocation = async () => {
-      const { status } = await requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setError('Permission to access location was denied');
-        return;
-      }
-
       try {
+        const { status } = await requestForegroundPermissionsAsync();
+        if (status !== 'granted') throw new Error('Location permission denied');
         const { coords } = await getCurrentPositionAsync({});
         setLocation(coords);
       } catch (error) {
-        setError('Could not fetch location');
-        console.error(error);
+        setError(error.message);
+        Alert.alert('Error getting location', error.message, [{ text: 'OK' }]);
       }
     };
 
@@ -70,8 +59,8 @@ const MapScreen = () => {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: location ? location.latitude : 51.917404,
-            longitude: location ? location.longitude : 4.484861,
+            latitude: location?.latitude || 51.917404,
+            longitude: location?.longitude || 4.484861,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}

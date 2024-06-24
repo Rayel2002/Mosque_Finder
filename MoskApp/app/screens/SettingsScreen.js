@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { useTheme } from '../context/ThemeContext.js';
-import { lightTheme, darkTheme, deuteranopiaTheme, protanopiaTheme, tritanopiaTheme } from '../utils/Themes.js';
 import { Picker } from '@react-native-picker/picker';
-import { authenticateUser } from '../components/Authenticate.js';
+import { authenticateUser } from '../components/Authenticate';
 import { useNavigation } from '@react-navigation/native';
+import { themes } from '../utils/Themes.js';
 
 const SettingsScreen = () => {
   const { theme, toggleTheme } = useTheme();
@@ -14,14 +14,17 @@ const SettingsScreen = () => {
 
   useEffect(() => {
     const authenticate = async () => {
-      const isAuthenticated = await authenticateUser();
-      if (isAuthenticated) {
-        setIsAuthenticated(true);
-      } else {
+      try {
+        const isAuthenticated = await authenticateUser();
+        setIsAuthenticated(isAuthenticated);
+        if (!isAuthenticated) {
+          throw new Error('Authentication failed');
+        }
+      } catch (error) {
+        Alert.alert('Authentication error', error.message, [{ text: 'OK' }]);
         navigation.navigate('AuthFailed');
       }
     };
-
     authenticate();
   }, []);
 
@@ -39,15 +42,12 @@ const SettingsScreen = () => {
           <Picker
             selectedValue={selectedTheme}
             style={[styles.picker, { color: theme.textColor }]}
-            onValueChange={(itemValue) => handleThemeChange(itemValue)}
-            itemStyle={{ color: theme.textColor }} // Ensure the picker items use the theme's text color
+            onValueChange={handleThemeChange}
+            itemStyle={{ color: theme.textColor }}
           >
-            <Picker.Item label="Light" value="light" />
-            <Picker.Item label="Dark" value="dark" />
-            <Picker.Item label="Deuteranopia" value="deuteranopia" />
-            <Picker.Item label="Protanopia" value="protanopia" />
-            <Picker.Item label="Tritanopia" value="tritanopia" />
-            {/* Add more options as needed */}
+            {Object.keys(themes).map((key) => (
+              <Picker.Item label={key.charAt(0).toUpperCase() + key.slice(1)} value={key} key={key} />
+            ))}
           </Picker>
         </View>
       ) : (

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { requestForegroundPermissionsAsync } from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 
@@ -11,19 +11,30 @@ const PermissionsHandler = ({ onPermissionsGranted }) => {
   }, []);
 
   const requestPermissions = async () => {
-    const { status } = await requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      navigation.navigate('PermissionsDenied', { onRetry: requestPermissions });
-      return;
+    try {
+      const { status } = await requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Toestemming geweigerd',
+          'Locatietoestemming is vereist om deze app te gebruiken. Schakel locatietoestemmingen in via de instellingen van uw apparaat.',
+          [{ text: 'OK' }]
+        );
+        navigation.navigate('PermissionsDenied', { onRetry: requestPermissions });
+        return;
+      }
+      onPermissionsGranted();
+    } catch (error) {
+      Alert.alert(
+        'Fout',
+        `Er is een fout opgetreden bij het aanvragen van toestemmingen: ${error.message}`,
+        [{ text: 'OK' }]
+      );
     }
-
-    // If we reach here, all permissions are granted
-    onPermissionsGranted();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Requesting Permissions...</Text>
+      <Text style={styles.text}>Toestemmingen aanvragen...</Text>
     </View>
   );
 };
