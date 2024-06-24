@@ -90,7 +90,7 @@ const SettingsScreen = () => {
             onPress={toggleShowThemes}
           >
             <Text style={[styles.buttonText, { color: theme.buttonTextColor }]}>
-              {`Current Theme: ${currentThemeName}`}
+              {`${currentThemeName}`}
             </Text>
           </TouchableOpacity>
           <Animated.View
