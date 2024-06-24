@@ -9,10 +9,10 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-import { useTheme } from "../hooks/useTheme";
-import { authenticateUser } from "../components/Authenticate";
+import { useTheme } from "../hooks/useTheme.js";
+import { authenticateUser } from "../components/Authenticate.js";
 import { useNavigation } from "@react-navigation/native";
-import { themes } from "../utils/Themes";
+import { themes } from "../utils/Themes.js";
 
 const SettingsScreen = () => {
   const { theme, toggleTheme } = useTheme();
@@ -90,7 +90,7 @@ const SettingsScreen = () => {
             onPress={toggleShowThemes}
           >
             <Text style={[styles.buttonText, { color: theme.buttonTextColor }]}>
-              {`${currentThemeName}`}
+              {`Current Theme: ${currentThemeName}`}
             </Text>
           </TouchableOpacity>
           <Animated.View
