@@ -28,7 +28,7 @@ export const themes = {
     colors: ["#5F9EA0", "#FFD700", "#8A2BE2", "#7FFF00", "#FF69B4"],
     backgroundColor: "#5F9EA0",
     textColor: "#ffffff",
-    buttonColor: "#7FFF00",
+    buttonColor: "#8A2BE2",
     buttonTextColor: "#000000",
   },
   tritanopia: {
@@ -36,7 +36,7 @@ export const themes = {
     colors: ["#FF6347", "#00FF7F", "#FFD700", "#8B0000", "#8A2BE2"],
     backgroundColor: "#FF6347",
     textColor: "#ffffff",
-    buttonColor: "#00FF7F",
+    buttonColor: "#FFD700",
     buttonTextColor: "#000000",
   },
 };

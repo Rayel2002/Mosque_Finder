@@ -17,9 +17,9 @@ const SplashScreenComponent = () => {
       try {
         await fetchData();
         await loadAsync({
-          Entypo: require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Entypo.ttf"),
+          Entypo: require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Entypo.ttf")
         });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Set timeout to 5000ms (5 seconds)
       } catch (e) {
         console.warn(e);
       } finally {
@@ -40,21 +40,15 @@ const SplashScreenComponent = () => {
   }
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.backgroundColor }]}
-      onLayout={onLayoutRootView}
-    >
+    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]} onLayout={onLayoutRootView}>
       <Image
-        source={require("../assets/mosque-icon.png")} // Add your mosque icon image here
+        source={require('../assets/mosque-icon.png')} // Add your mosque icon image here
         style={styles.icon}
       />
-      <Text style={[styles.text, { color: theme.textColor }]}>
-        Welcome to Mosque Finder! 🕌
-      </Text>
-      <Entypo name="rocket" size={30} color={theme.textColor} />
+      <Text style={[styles.text, { color: theme.textColor }]}>Welcome to Mosque Finder! 🕌</Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
