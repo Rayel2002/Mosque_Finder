@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button, Alert } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import MapView from "react-native-maps";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as LocalAuthentication from "expo-local-authentication";
+import { authenticateUser } from "../components/Authenticate.js";
 import { fetchData } from "../utils/FetchApi.js";
+import HotspotMarker from "../components/HotspotMarker.js";
 
 const MapScreen = () => {
   const [hotspots, setHotspots] = useState([]);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const authenticate = async () => {
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const supported = await LocalAuthentication.supportedAuthenticationTypesAsync();
-      if (hasHardware && supported.length > 0) {
-        const authResult = await LocalAuthentication.authenticateAsync();
-        if (!authResult.success) {
-          Alert.alert("Authentication failed", "Please try again");
-          return;
-        }
+      const isAuthenticated = await authenticateUser();
+      if (isAuthenticated) {
+        loadHotspots();
+      } else {
+        setError("Authentication failed");
+        setIsLoading(false);
       }
-      loadHotspots();
     };
 
     const loadHotspots = async () => {
@@ -43,6 +42,8 @@ const MapScreen = () => {
       } catch (err) {
         setError(err.message);
         console.error("Error fetching data:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -51,7 +52,9 @@ const MapScreen = () => {
 
   return (
     <View style={styles.container}>
-      {error ? (
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : error ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>Error: {error}</Text>
         </View>
@@ -66,15 +69,7 @@ const MapScreen = () => {
           }}
         >
           {hotspots.map((hotspot, index) => (
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: hotspot.latitude,
-                longitude: hotspot.longitude,
-              }}
-              title={hotspot.title}
-              description={hotspot.description}
-            />
+            <HotspotMarker key={index} hotspot={hotspot} />
           ))}
         </MapView>
       )}
