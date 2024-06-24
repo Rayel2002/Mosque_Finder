@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { Entypo } from "@expo/vector-icons";
+import { Text, View, StyleSheet, Image } from "react-native";
 import { preventAutoHideAsync, hideAsync } from "expo-splash-screen";
 import { loadAsync } from "expo-font";
 import { fetchData } from "../utils/FetchApi.js";
@@ -17,8 +16,10 @@ const SplashScreenComponent = () => {
     async function prepare() {
       try {
         await fetchData();
-        await loadAsync(Entypo.font);
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await loadAsync({
+          Entypo: require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Entypo.ttf"),
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
       } finally {
@@ -39,22 +40,37 @@ const SplashScreenComponent = () => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]} onLayout={onLayoutRootView}>
-      <Text style={[styles.text, { color: theme.textColor }]}>SplashScreen Demo! 👋</Text>
+    <View
+      style={[styles.container, { backgroundColor: theme.backgroundColor }]}
+      onLayout={onLayoutRootView}
+    >
+      <Image
+        source={require("../assets/mosque-icon.png")} // Add your mosque icon image here
+        style={styles.icon}
+      />
+      <Text style={[styles.text, { color: theme.textColor }]}>
+        Welcome to Mosque Finder! 🕌
+      </Text>
       <Entypo name="rocket" size={30} color={theme.textColor} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   text: {
-    fontSize: 18
-  }
+    fontSize: 24,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
+  icon: {
+    width: 100,
+    height: 100,
+  },
 });
 
 export default SplashScreenComponent;
