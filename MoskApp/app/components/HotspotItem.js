@@ -10,12 +10,14 @@ const HotspotItem = ({ item, onPress, isFavorite, onFavoriteToggle }) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.itemContainer}>
-        <Text style={[styles.itemTitle, { color: theme.textColor }]}>
-          {item.title}
-        </Text>
-        <Text style={[styles.itemDescription, { color: theme.textColor }]}>
-          {item.description}
-        </Text>
+        <View style={styles.textContainer}>
+          <Text style={[styles.itemTitle, { color: theme.textColor }]}>
+            {item.title}
+          </Text>
+          <Text style={[styles.itemDescription, { color: theme.textColor }]}>
+            {item.description}
+          </Text>
+        </View>
         <TouchableOpacity onPress={onFavoriteToggle}>
           <Ionicons
             name={isFavorite ? 'heart' : 'heart-outline'}
@@ -45,15 +47,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
+  textContainer: {
+    flex: 1,
+  },
   itemTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    flex: 1,
   },
   itemDescription: {
     fontSize: 14,
     color: '#666',
-    flex: 2,
   },
   favoriteIcon: {
     marginLeft: 10,
@@ -61,4 +64,3 @@ const styles = StyleSheet.create({
 });
 
 export default HotspotItem;
-
