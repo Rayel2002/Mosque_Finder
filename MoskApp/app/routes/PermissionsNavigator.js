@@ -3,10 +3,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { requestForegroundPermissionsAsync } from 'expo-location';
 import PermissionsDeniedScreen from '../screens/PermissionsDeniedScreen.js';
 import AppStack from './AppStack.js';
+import { useTheme } from '../context/ThemeContext.js';
 
 const Stack = createStackNavigator();
 
 const PermissionsNavigator = () => {
+  const { theme } = useTheme();
   const [permissionsGranted, setPermissionsGranted] = useState(null);
 
   useEffect(() => {
@@ -18,17 +20,28 @@ const PermissionsNavigator = () => {
     checkPermissions();
   }, []);
 
+  if (permissionsGranted === null) {
+    return <LoadingScreen />; // Avoid inline function for component
+  }
+
   return (
-    <Stack.Navigator>
-      {permissionsGranted === null ? (
-        <Stack.Screen name="Loading" component={() => null} />
-      ) : permissionsGranted ? (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: theme.backgroundColor },
+        headerTintColor: theme.textColor,
+      }}
+    >
+      {permissionsGranted ? (
         <Stack.Screen name="Main" component={AppStack} options={{ headerShown: false }} />
       ) : (
         <Stack.Screen name="PermissionsDenied" component={PermissionsDeniedScreen} options={{ headerShown: false }} />
       )}
     </Stack.Navigator>
   );
+};
+
+const LoadingScreen = () => {
+  return null; // This can be replaced with an actual loading component if needed
 };
 
 export default PermissionsNavigator;

@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
-import { fetchData } from '../utils/FetchApi';
-import HotspotMarker from '../components/HotspotMarker';
-import { useTheme } from '../context/ThemeContext'; // Import useTheme hook
+import { fetchData } from '../utils/FetchApi.js';
+import { useTheme } from '../context/ThemeContext.js';
+import HotspotMarker from '../components/HotspotMarker.js';
 
-const MapScreen = () => {
+const MapScreen = ({ route }) => {
+  const { selectedHotspot } = route.params || {};
   const { theme } = useTheme(); // Get the current theme
   const [hotspots, setHotspots] = useState([]);
   const [error, setError] = useState(null);
@@ -50,7 +51,7 @@ const MapScreen = () => {
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+    <View style={[styles.container, { backgroundColor: theme.colors[0] }]}>
       {isLoading ? (
         <ActivityIndicator size="large" color={theme.buttonColor} />
       ) : error ? (
@@ -61,8 +62,8 @@ const MapScreen = () => {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: location?.latitude || 51.917404,
-            longitude: location?.longitude || 4.484861,
+            latitude: selectedHotspot ? selectedHotspot.latitude : location?.latitude || 51.917404,
+            longitude: selectedHotspot ? selectedHotspot.longitude : location?.longitude || 4.484861,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
@@ -70,6 +71,16 @@ const MapScreen = () => {
           {hotspots.map((hotspot, index) => (
             <HotspotMarker key={index} hotspot={hotspot} />
           ))}
+          {selectedHotspot && (
+            <Marker
+              coordinate={{
+                latitude: selectedHotspot.latitude,
+                longitude: selectedHotspot.longitude,
+              }}
+              title={selectedHotspot.title}
+              description={selectedHotspot.description}
+            />
+          )}
         </MapView>
       )}
     </View>

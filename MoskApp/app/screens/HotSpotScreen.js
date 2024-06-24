@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import HotspotItem from "../components/HotspotItem";
-import SearchBar from "../components/SearchBar";
-import { useTheme } from "../context/ThemeContext"; // Import useTheme hook
-import { themes } from "../utils/Themes"; // Import themes from the external file
+import HotspotItem from "../components/HotspotItem.js";
+import SearchBar from "../components/SearchBar.js";
+import { useTheme } from "../context/ThemeContext.js"; // Import useTheme hook
+import { themes } from "../utils/Themes.js"; // Import themes from the external file
 
 const HotspotScreen = ({ navigation }) => {
   const { theme } = useTheme(); // Get the current theme
@@ -47,7 +47,7 @@ const HotspotScreen = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <HotspotItem
       item={item}
-      onPress={() => navigation.navigate("Map", { hotspot: item })}
+      onPress={() => navigation.navigate("Map", { selectedHotspot: item })}
     />
   );
 

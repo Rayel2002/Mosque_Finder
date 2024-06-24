@@ -14,12 +14,13 @@ const Stack = createStackNavigator();
 
 const SettingsStack = () => {
   const { theme } = useTheme();
+  const lastColor = theme.colors[theme.colors.length - 1]; // Get the last color from the colors array
 
   return (
     <Stack.Navigator
       initialRouteName="SettingsMain"
       screenOptions={{
-        headerStyle: { backgroundColor: theme.backgroundColor },
+        headerStyle: { backgroundColor: lastColor },
         headerTintColor: theme.textColor,
       }}
     >
@@ -31,6 +32,7 @@ const SettingsStack = () => {
 
 const MainTabNavigator = () => {
   const { theme } = useTheme();
+  const lastColor = theme.colors[theme.colors.length - 1]; // Get the last color from the colors array
 
   return (
     <Tab.Navigator
@@ -48,25 +50,34 @@ const MainTabNavigator = () => {
             iconName = focused ? 'settings' : 'settings-outline';
           }
 
-          // Return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: theme.buttonColor,
         tabBarInactiveTintColor: theme.textColor,
-        tabBarStyle: { backgroundColor: theme.backgroundColor },
+        tabBarStyle: { backgroundColor: lastColor },
+        headerStyle: { backgroundColor: lastColor },
+        headerTintColor: theme.textColor,
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Map" component={MapScreen} />
-      <Tab.Screen name="HotspotList" component={HotspotScreen} />
+      <Tab.Screen name="Hotspots" component={HotspotScreen} />
       <Tab.Screen name="Settings" component={SettingsStack} />
     </Tab.Navigator>
   );
 };
 
 const AppStack = () => {
+  const { theme } = useTheme();
+  const lastColor = theme.colors[theme.colors.length - 1]; // Get the last color from the colors array
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: lastColor },
+        headerTintColor: theme.textColor,
+      }}
+    >
       <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
