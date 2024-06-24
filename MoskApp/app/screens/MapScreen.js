@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button, Alert } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as LocalAuthentication from "expo-local-authentication";
+import { authenticateUser } from "../components/Authenticate.js";
 import { fetchData } from "../utils/FetchApi.js";
 
 const MapScreen = () => {
@@ -11,16 +11,10 @@ const MapScreen = () => {
 
   useEffect(() => {
     const authenticate = async () => {
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const supported = await LocalAuthentication.supportedAuthenticationTypesAsync();
-      if (hasHardware && supported.length > 0) {
-        const authResult = await LocalAuthentication.authenticateAsync();
-        if (!authResult.success) {
-          Alert.alert("Authentication failed", "Please try again");
-          return;
-        }
+      const isAuthenticated = await authenticateUser();
+      if (isAuthenticated) {
+        loadHotspots();
       }
-      loadHotspots();
     };
 
     const loadHotspots = async () => {
