@@ -5,32 +5,23 @@ import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import { fetchData } from "../utils/FetchApi.js";
 
-// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
-export default function SplashScreen() {
+const SplashScreenComponent = () => {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
     async function prepare() {
       try {
-        const data = await fetchData();  // Use the fetchData function
-        console.log(data);
-
+        await fetchData();
         await Font.loadAsync(Entypo.font);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
-        // Fallback data or font loading logic
-        console.warn('Falling back to default data and font');
-        await Font.loadAsync(Entypo.font);
-        // Here you can set default data or handle the absence of data gracefully
       } finally {
-        // Tell the application to render
         setAppIsReady(true);
       }
     }
-
     prepare();
   }, []);
 
@@ -45,12 +36,11 @@ export default function SplashScreen() {
   }
 
   return (
-    <View
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-      onLayout={onLayoutRootView}
-    >
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }} onLayout={onLayoutRootView}>
       <Text>SplashScreen Demo! 👋</Text>
       <Entypo name="rocket" size={30} />
     </View>
   );
 }
+
+export default SplashScreenComponent;

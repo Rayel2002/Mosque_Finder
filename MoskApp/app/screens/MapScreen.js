@@ -1,53 +1,50 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
-import MapView from "react-native-maps";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { authenticateUser } from "../components/Authenticate.js";
-import { fetchData } from "../utils/FetchApi.js";
-import HotspotMarker from "../components/HotspotMarker.js";
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import MapView from 'react-native-maps';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
+import { fetchData } from '../utils/FetchApi.js';
+import HotspotMarker from '../components/HotspotMarker.js';
 
 const MapScreen = () => {
   const [hotspots, setHotspots] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
-    const authenticate = async () => {
-      const isAuthenticated = await authenticateUser();
-      if (isAuthenticated) {
-        loadHotspots();
-      } else {
-        setError("Authentication failed");
-        setIsLoading(false);
-      }
-    };
-
     const loadHotspots = async () => {
       try {
-        const storedHotspots = await AsyncStorage.getItem("hotspots");
-        if (storedHotspots !== null) {
+        const storedHotspots = await AsyncStorage.getItem('hotspots');
+        if (storedHotspots) {
           setHotspots(JSON.parse(storedHotspots));
         } else {
           const data = await fetchData();
-          console.log("Fetched data:", data);
-          if (Array.isArray(data)) {
-            console.log("Hotspots:", data);
-            setHotspots(data);
-            await AsyncStorage.setItem("hotspots", JSON.stringify(data));
-          } else {
-            setError("Invalid data structure received");
-            console.error("Invalid data structure received:", data);
-          }
+          setHotspots(data);
+          await AsyncStorage.setItem('hotspots', JSON.stringify(data));
         }
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching data:", err);
+        Alert.alert('Error loading hotspots', err.message, [{ text: 'OK' }]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    authenticate();
+    const getLocation = async () => {
+      try {
+        const { status } = await requestForegroundPermissionsAsync();
+        if (status !== 'granted') throw new Error('Location permission denied');
+        const { coords } = await getCurrentPositionAsync({});
+        setLocation(coords);
+      } catch (error) {
+        setError(error.message);
+        Alert.alert('Error getting location', error.message, [{ text: 'OK' }]);
+      }
+    };
+
+    getLocation();
+    loadHotspots();
   }, []);
 
   return (
@@ -62,8 +59,8 @@ const MapScreen = () => {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: 51.917404,
-            longitude: 4.484861,
+            latitude: location?.latitude || 51.917404,
+            longitude: location?.longitude || 4.484861,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
@@ -86,11 +83,11 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   errorText: {
-    color: "red",
+    color: 'red',
     fontSize: 16,
   },
 });

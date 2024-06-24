@@ -1,48 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import HotspotItem from '../components/HotspotItem.js';
+import React, { useEffect, useState } from "react";
+import { View, FlatList, StyleSheet, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import HotspotItem from "../components/HotspotItem.js";
+import SearchBar from "../components/SearchBar.js";
 
-const HotspotListScreen = ({ navigation }) => {
+const HotspotScreen = ({ navigation }) => {
   const [hotspots, setHotspots] = useState([]);
+  const [filteredHotspots, setFilteredHotspots] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadHotspots = async () => {
       try {
-        const storedHotspots = await AsyncStorage.getItem('hotspots');
-        if (storedHotspots !== null) {
+        const storedHotspots = await AsyncStorage.getItem("hotspots");
+        if (storedHotspots) {
           const parsedHotspots = JSON.parse(storedHotspots);
-
-          // Check for valid id property in each hotspot
-          const validHotspots = parsedHotspots.map((hotspot, index) => ({
+          setHotspots(parsedHotspots.map((hotspot, index) => ({
             ...hotspot,
-            id: hotspot.id || index.toString(), // Ensure each hotspot has a unique id
-          }));
-
-          setHotspots(validHotspots);
+            id: hotspot.id || index.toString(),
+          })));
+          setFilteredHotspots(parsedHotspots);
         }
       } catch (error) {
-        console.error('Error loading hotspots:', error);
-        Alert.alert('Error', 'There was an error loading the hotspots.');
+        Alert.alert("Error", "There was an error loading the hotspots.");
       }
     };
 
     loadHotspots();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredHotspots(hotspots);
+    } else {
+      setFilteredHotspots(
+        hotspots.filter(hotspot =>
+          hotspot.title.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+  }, [searchTerm, hotspots]);
+
   const renderItem = ({ item }) => (
     <HotspotItem
       item={item}
-      onPress={() => navigation.navigate('Map', { hotspot: item })}
+      onPress={() => navigation.navigate("Map", { hotspot: item })}
     />
   );
 
   return (
     <View style={styles.container}>
+      <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       <FlatList
-        data={hotspots}
+        data={filteredHotspots}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={item => item.id.toString()}
       />
     </View>
   );
@@ -55,4 +67,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HotspotListScreen;
+export default HotspotScreen;
