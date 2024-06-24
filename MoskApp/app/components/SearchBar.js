@@ -8,7 +8,7 @@ const SearchBar = ({ searchTerm, onSearchChange, containerStyle, inputStyle, bor
       <TextInput
         style={[styles.input, inputStyle]}
         placeholder="Search hotspots..."
-        placeholderTextColor={inputStyle.color} // Use text color for placeholder as well
+        placeholderTextColor={inputStyle.color}
         value={searchTerm}
         onChangeText={onSearchChange}
       />
@@ -27,13 +27,11 @@ SearchBar.propTypes = {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    borderWidth: 2, // Added border width for the dynamic border color
+    borderWidth: 1,
     borderRadius: 5,
-    marginBottom: 16,
   },
   input: {
     height: 40,
-    borderRadius: 5,
     paddingLeft: 10,
   },
 });
