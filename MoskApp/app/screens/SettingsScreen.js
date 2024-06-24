@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, Animated, Dimensions } from 'react-native';
-import { useTheme } from '../context/ThemeContext.js';
+import { useTheme } from '../context/ThemeContext';
 import { authenticateUser } from '../components/Authenticate';
 import { useNavigation } from '@react-navigation/native';
-import { themes } from '../utils/Themes.js'; // Import themes from the external file
+import { themes } from '../utils/Themes'; // Import themes from the external file
 
 const SettingsScreen = () => {
   const { theme, toggleTheme } = useTheme();
