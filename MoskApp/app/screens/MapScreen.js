@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
-import { fetchData } from '../utils/FetchApi.js';
-import HotspotMarker from '../components/HotspotMarker.js';
+import { fetchData } from '../utils/FetchApi';
+import HotspotMarker from '../components/HotspotMarker';
+import { useTheme } from '../context/ThemeContext'; // Import useTheme hook
 
 const MapScreen = () => {
+  const { theme } = useTheme(); // Get the current theme
   const [hotspots, setHotspots] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,12 +50,12 @@ const MapScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={theme.buttonColor} />
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Error: {error}</Text>
+          <Text style={[styles.errorText, { color: theme.textColor }]}>Error: {error}</Text>
         </View>
       ) : (
         <MapView
@@ -87,7 +89,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   errorText: {
-    color: 'red',
     fontSize: 16,
   },
 });

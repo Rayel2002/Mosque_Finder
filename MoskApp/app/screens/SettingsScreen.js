@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, Animated, 
 import { useTheme } from '../context/ThemeContext';
 import { authenticateUser } from '../components/Authenticate';
 import { useNavigation } from '@react-navigation/native';
-import { themes } from '../utils/Themes'; // Import themes from the external file
+import { themes } from '../utils/Themes';
 
 const SettingsScreen = () => {
   const { theme, toggleTheme } = useTheme();
@@ -66,14 +66,15 @@ const SettingsScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+      <Text style={[styles.text, { color: theme.textColor }]}>Settings</Text>
       {isAuthenticated ? (
         <>
           <TouchableOpacity
-            style={styles.selectThemeButton}
+            style={[styles.selectThemeButton, { backgroundColor: theme.buttonColor }]}
             onPress={toggleShowThemes}
           >
-            <Text style={[styles.buttonText, { color: theme.textColor }]}>
-              {`${currentThemeName}`}
+            <Text style={[styles.buttonText, { color: theme.buttonTextColor }]}>
+              {`Current Theme: ${currentThemeName}`}
             </Text>
           </TouchableOpacity>
           <Animated.View style={[styles.scrollContainer, { transform: [{ scale }], opacity }]}>
@@ -133,7 +134,6 @@ const styles = StyleSheet.create({
   selectThemeButton: {
     width: width * 0.9,
     padding: 15,
-    backgroundColor: '#4CAF50', // Shade of green
     borderRadius: 5,
     alignItems: 'center',
     marginBottom: 20,

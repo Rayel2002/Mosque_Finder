@@ -1,20 +1,23 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, View } from "react-native";
-import Entypo from "@expo/vector-icons/Entypo";
-import * as SplashScreen from "expo-splash-screen";
-import * as Font from "expo-font";
+import { Text, View, StyleSheet } from "react-native";
+import { Entypo } from "@expo/vector-icons";
+import { preventAutoHideAsync, hideAsync } from "expo-splash-screen";
+import { loadAsync } from "expo-font";
 import { fetchData } from "../utils/FetchApi.js";
+import { useTheme } from "../context/ThemeContext"; // Import useTheme hook
 
-SplashScreen.preventAutoHideAsync();
+// Prevent the splash screen from auto hiding
+preventAutoHideAsync();
 
 const SplashScreenComponent = () => {
+  const { theme } = useTheme(); // Get the current theme
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
     async function prepare() {
       try {
         await fetchData();
-        await Font.loadAsync(Entypo.font);
+        await loadAsync(Entypo.font);
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
@@ -27,7 +30,7 @@ const SplashScreenComponent = () => {
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
-      await SplashScreen.hideAsync();
+      await hideAsync();
     }
   }, [appIsReady]);
 
@@ -36,11 +39,22 @@ const SplashScreenComponent = () => {
   }
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }} onLayout={onLayoutRootView}>
-      <Text>SplashScreen Demo! 👋</Text>
-      <Entypo name="rocket" size={30} />
+    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]} onLayout={onLayoutRootView}>
+      <Text style={[styles.text, { color: theme.textColor }]}>SplashScreen Demo! 👋</Text>
+      <Entypo name="rocket" size={30} color={theme.textColor} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  text: {
+    fontSize: 18
+  }
+});
 
 export default SplashScreenComponent;

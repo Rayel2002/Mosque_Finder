@@ -1,14 +1,16 @@
 import React from 'react';
-import PermissionsNavigator from './app/routes/PermissionsNavigator.js';
+import { NavigationContainer } from '@react-navigation/native';
 import { ThemeProvider } from './app/context/ThemeContext.js';
+import PermissionsNavigator from './app/routes/PermissionsNavigator.js';
 
 const App = () => {
   return (
     <ThemeProvider>
-      <PermissionsNavigator />
+      <NavigationContainer>
+        <PermissionsNavigator />
+      </NavigationContainer>
     </ThemeProvider>
   );
 };
 
 export default App;
-

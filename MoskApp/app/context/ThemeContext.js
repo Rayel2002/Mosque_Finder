@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext } from "react";
-import { themes } from "../utils/Themes";
+import React, { createContext, useState, useContext } from 'react';
+import { themes } from '../utils/Themes.js';
 
 const ThemeContext = createContext();
 
@@ -7,7 +7,7 @@ export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(themes.light);
 
   const toggleTheme = (selectedTheme) => {
-    setTheme(themes[selectedTheme] || themes.light);
+    setTheme(themes[selectedTheme]);
   };
 
   return (

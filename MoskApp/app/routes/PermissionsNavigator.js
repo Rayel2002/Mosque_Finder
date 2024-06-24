@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import PermissionsDeniedScreen from '../screens/PermissionsDeniedScreen.js';
 import { requestForegroundPermissionsAsync } from 'expo-location';
-import AppStack from './AppStack.js';  // Assume AppStack is exported from another file
+import PermissionsDeniedScreen from '../screens/PermissionsDeniedScreen.js';
+import AppStack from './AppStack.js';
 
 const Stack = createStackNavigator();
 
@@ -20,18 +19,15 @@ const PermissionsNavigator = () => {
   }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {permissionsGranted === null ? (
-          // Loading state can be handled here
-          <Stack.Screen name="Loading" component={() => null} />
-        ) : permissionsGranted ? (
-          <Stack.Screen name="Main" component={AppStack} options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="PermissionsDenied" component={PermissionsDeniedScreen} options={{ headerShown: false }} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator>
+      {permissionsGranted === null ? (
+        <Stack.Screen name="Loading" component={() => null} />
+      ) : permissionsGranted ? (
+        <Stack.Screen name="Main" component={AppStack} options={{ headerShown: false }} />
+      ) : (
+        <Stack.Screen name="PermissionsDenied" component={PermissionsDeniedScreen} options={{ headerShown: false }} />
+      )}
+    </Stack.Navigator>
   );
 };
 
