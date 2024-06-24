@@ -7,6 +7,7 @@ import SettingsScreen from '../screens/SettingsScreen.js';
 import HotspotScreen from '../screens/HotSpotScreen.js';
 import AuthFailedScreen from '../screens/AuthFailedScreen.js';
 import { useTheme } from '../context/ThemeContext.js';
+import { Ionicons } from '@expo/vector-icons'; // Import icons from @expo/vector-icons
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -33,11 +34,27 @@ const MainTabNavigator = () => {
 
   return (
     <Tab.Navigator
-      screenOptions={{
-        tabBarStyle: { backgroundColor: theme.backgroundColor },
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Map') {
+            iconName = focused ? 'map' : 'map-outline';
+          } else if (route.name === 'HotspotList') {
+            iconName = focused ? 'list' : 'list-outline';
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'settings' : 'settings-outline';
+          }
+
+          // Return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
         tabBarActiveTintColor: theme.buttonColor,
         tabBarInactiveTintColor: theme.textColor,
-      }}
+        tabBarStyle: { backgroundColor: theme.backgroundColor },
+      })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Map" component={MapScreen} />
