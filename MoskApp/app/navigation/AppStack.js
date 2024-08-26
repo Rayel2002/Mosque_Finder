@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+// Component voor de logo-afbeelding in de header
 const LogoTitle = () => {
   return (
     <Image
@@ -21,31 +22,33 @@ const LogoTitle = () => {
   );
 };
 
+// Functie om de headerkleur te bepalen op basis van het huidige thema
 const getHeaderColor = (theme) => {
   if (
     theme.name === "Dark" ||
     theme.name === "Deuteranopia" ||
     theme.name === "Protanopia"
   ) {
-    return theme.colors[2]; // Use the third color for Dark and Deuteranopia themes
+    return theme.colors[2]; // Gebruik de derde kleur voor Dark en Deuteranopia thema's
   } else if (theme.name === "Tritanopia") {
     return theme.colors[3];
   } else {
-    return theme.colors[theme.colors.length - 1]; // Use the last color for other themes
+    return theme.colors[theme.colors.length - 1]; // Gebruik de laatste kleur voor andere thema's
   }
 };
 
+// Stack-navigator voor de instellingen en authenticatie fouten
 const SettingsStack = () => {
-  const { theme } = useTheme();
-  const headerColor = getHeaderColor(theme);
+  const { theme } = useTheme(); // Verkrijg het huidige thema
+  const headerColor = getHeaderColor(theme); // Bepaal de headerkleur op basis van het thema
 
   return (
     <Stack.Navigator
-      initialRouteName="SettingsMain"
+      initialRouteName="SettingsMain" // Start met de SettingsMain scherm
       screenOptions={{
-        headerStyle: { backgroundColor: headerColor },
-        headerTintColor: theme.textColor,
-        headerTitle: () => <LogoTitle />,
+        headerStyle: { backgroundColor: headerColor }, // Stel de achtergrondkleur van de header in
+        headerTintColor: theme.textColor, // Stel de kleur van de header-tekst in
+        headerTitle: () => <LogoTitle />, // Stel de logo als de titel van de header in
       }}
       options={{ headerShown: false }}
     >
@@ -63,13 +66,15 @@ const SettingsStack = () => {
   );
 };
 
+// Tab-navigator voor de hoofdschermen
 const MainTabNavigator = () => {
-  const { theme } = useTheme();
-  const headerColor = getHeaderColor(theme);
+  const { theme } = useTheme(); // Verkrijg het huidige thema
+  const headerColor = getHeaderColor(theme); // Bepaal de headerkleur op basis van het thema
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        // Stel de iconen in voor elke tab
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -83,16 +88,16 @@ const MainTabNavigator = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: theme.buttonColor,
-        tabBarInactiveTintColor: theme.textColor,
+        tabBarActiveTintColor: theme.buttonColor, // Kleur voor actieve tab
+        tabBarInactiveTintColor: theme.textColor, // Kleur voor inactieve tab
         tabBarStyle: {
           backgroundColor: headerColor,
           paddingTop: 10,
           paddingBottom: 10,
-        }, // Add padding to the tab bar
-        headerStyle: { backgroundColor: headerColor },
-        headerTintColor: theme.textColor,
-        headerTitle: () => <LogoTitle />,
+        }, // Voeg padding toe aan de tab bar
+        headerStyle: { backgroundColor: headerColor }, // Stel de achtergrondkleur van de header in
+        headerTintColor: theme.textColor, // Stel de kleur van de header-tekst in
+        headerTitle: () => <LogoTitle />, // Stel de logo als de titel van de header in
       })}
     >
       <Tab.Screen name="Map" component={MapScreen} />
@@ -102,22 +107,23 @@ const MainTabNavigator = () => {
   );
 };
 
+// Hoofd Stack-navigator die de tab navigatie omhult
 const AppStack = () => {
-  const { theme } = useTheme();
-  const headerColor = getHeaderColor(theme);
+  const { theme } = useTheme(); // Verkrijg het huidige thema
+  const headerColor = getHeaderColor(theme); // Bepaal de headerkleur op basis van het thema
 
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: headerColor },
-        headerTintColor: theme.textColor,
-        headerTitle: () => <LogoTitle />,
+        headerStyle: { backgroundColor: headerColor }, // Stel de achtergrondkleur van de header in
+        headerTintColor: theme.textColor, // Stel de kleur van de header-tekst in
+        headerTitle: () => <LogoTitle />, // Stel de logo als de titel van de header in
       }}
     >
       <Stack.Screen
         name="Main"
         component={MainTabNavigator}
-        options={{ headerShown: false }}
+        options={{ headerShown: false }} // Verberg de header voor de tab navigator
       />
     </Stack.Navigator>
   );
