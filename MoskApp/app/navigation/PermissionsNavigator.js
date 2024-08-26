@@ -32,7 +32,7 @@ const PermissionsNavigator = () => {
       }}
     >
       {permissionsGranted ? (
-        <Stack.Screen name="Main" component={AppStack} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={AppStack} options={{ headerShown: false }} />
       ) : (
         <Stack.Screen name="PermissionsDenied" component={PermissionsDeniedScreen} options={{ headerShown: false }} />
       )}

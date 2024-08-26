@@ -1,13 +1,13 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Image } from 'react-native';
-import MapScreen from '../screens/MapScreen.js';
-import SettingsScreen from '../screens/SettingsScreen.js';
-import HotspotScreen from '../screens/HotSpotScreen.js';
-import AuthFailedScreen from '../screens/AuthFailedScreen.js';
-import { useTheme } from '../hooks/useTheme.js';
-import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { Image } from "react-native";
+import MapScreen from "../screens/MapScreen.js";
+import SettingsScreen from "../screens/SettingsScreen.js";
+import HotspotScreen from "../screens/HotSpotScreen.js";
+import AuthFailedScreen from "../screens/AuthFailedScreen.js";
+import { useTheme } from "../hooks/useTheme.js";
+import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -15,9 +15,9 @@ const Stack = createStackNavigator();
 const LogoTitle = () => {
   return (
     <Image
-    source={require('../img/mosque-icon.png')}
-    style={{ width: 50, height: 50, marginBottom: 15}}
-  />
+      source={require("../img/mosque-icon.png")}
+      style={{ width: 50, height: 50, marginBottom: 15 }}
+    />
   );
 };
 
@@ -47,13 +47,18 @@ const SettingsStack = () => {
         headerTintColor: theme.textColor,
         headerTitle: () => <LogoTitle />,
       }}
+      options={{ headerShown: false }}
     >
       <Stack.Screen
         name="SettingsMain"
         component={SettingsScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="AuthFailed" component={AuthFailedScreen} />
+      <Stack.Screen
+        name="AuthFailed"
+        component={AuthFailedScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

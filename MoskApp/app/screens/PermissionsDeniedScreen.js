@@ -2,28 +2,30 @@ import React from 'react';
 import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import { requestForegroundPermissionsAsync } from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '../hooks/useTheme'; // Import useTheme hook
+import { useTheme } from '../hooks/useTheme'; // Importeer de useTheme-hook
 
 const PermissionsDeniedScreen = () => {
-  const { theme } = useTheme(); // Get the current theme
-  const navigation = useNavigation();
+  const { theme } = useTheme(); // Haal het huidige thema op
+  const navigation = useNavigation(); // Haal de navigatie object op
 
+  // Functie om de machtiging opnieuw aan te vragen
   const handleRetry = async () => {
-    const { status } = await requestForegroundPermissionsAsync();
-    if (status === 'granted') {
-      navigation.replace('Main');
+    const { status } = await requestForegroundPermissionsAsync(); // Vraag locatie machtigingen aan
+    if (status === 'granted') { // Controleer of de machtiging is verleend
+      navigation.replace('Main'); // Vervang de huidige scherm met het 'Main' scherm
     } else {
-      Alert.alert('Permission denied', 'Location permission is still denied. Enable location permissions in your device settings.', [{ text: 'OK' }]);
+      // Toon een alert als de machtiging nog steeds is geweigerd
+      Alert.alert('Machtiging geweigerd', 'Locatiemachtiging is nog steeds geweigerd. Schakel locatiemachtigingen in via de instellingen van uw apparaat.', [{ text: 'OK' }]);
     }
   };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
-      <Text style={[styles.errorText, { color: theme.textColor }]}>Permission Denied</Text>
+      <Text style={[styles.errorText, { color: theme.textColor }]}>Machtiging Geweigerd</Text>
       <Text style={[styles.text, { color: theme.textColor }]}>
-        Location permission is required to use this app. Enable location permissions in your device settings.
+        Locatiemachtiging is vereist om deze app te gebruiken. Schakel locatiemachtigingen in via de instellingen van uw apparaat.
       </Text>
-      <Button title="Retry" onPress={handleRetry} color={theme.buttonColor} />
+      <Button title="Opnieuw Proberen" onPress={handleRetry} color={theme.buttonColor} /> {/* Knop om opnieuw te proberen de machtiging aan te vragen */}
     </View>
   );
 };
