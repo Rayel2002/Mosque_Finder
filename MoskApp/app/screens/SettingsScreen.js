@@ -9,37 +9,40 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-import { useTheme } from "../hooks/useTheme";
-import { authenticateUser } from "../components/Authenticate";
-import { useNavigation } from "@react-navigation/native";
-import { themes } from "../utils/Themes";
+import { useTheme } from "../hooks/useTheme.js"; // Importeer de useTheme-hook
+import { authenticateUser } from "../components/Authenticate.js"; // Importeer de authenticateUser-functie
+import { useNavigation } from "@react-navigation/native"; // Importeer de useNavigation-hook
+import { themes } from "../utils/Themes.js"; // Importeer beschikbare thema's
 
 const SettingsScreen = () => {
-  const { theme, toggleTheme } = useTheme();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showThemes, setShowThemes] = useState(false);
-  const navigation = useNavigation();
-  const animation = useRef(new Animated.Value(0)).current;
+  const { theme, toggleTheme } = useTheme(); // Haal het huidige thema op en de functie om het thema te wisselen
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Staat voor authenticatiestatus
+  const [showThemes, setShowThemes] = useState(false); // Staat om te bepalen of de thema's moeten worden weergegeven
+  const navigation = useNavigation(); // Haal het navigatie-object op
+  const animation = useRef(new Animated.Value(0)).current; // Animatiewaarde voor het tonen van de thema's
 
+  // useEffect om de gebruiker te authenticeren bij het laden van het scherm
   useEffect(() => {
     const authenticate = async () => {
       try {
-        const isAuthenticated = await authenticateUser();
+        const isAuthenticated = await authenticateUser(); // Probeer de gebruiker te authenticeren
         setIsAuthenticated(isAuthenticated);
         if (!isAuthenticated) {
-          throw new Error("Authentication failed");
+          throw new Error("Authenticatie mislukt");
         }
       } catch (error) {
-        Alert.alert("Authentication error", error.message, [{ text: "OK" }]);
-        navigation.navigate("AuthFailed");
+        Alert.alert("Authenticatie fout", error.message, [{ text: "OK" }]);
+        navigation.navigate("AuthFailed"); // Navigeer naar een scherm wanneer authenticatie mislukt
       }
     };
     authenticate();
   }, []);
 
+  // Functie om het thema te wijzigen
   const handleThemeChange = (selectedTheme) => {
-    toggleTheme(selectedTheme);
-    setShowThemes(false);
+    toggleTheme(selectedTheme); // Wissel het thema
+    setShowThemes(false); // Sluit de thema-selectie
+    // Start de animatie om het thema te tonen
     Animated.timing(animation, {
       toValue: 0,
       duration: 300,
@@ -47,8 +50,10 @@ const SettingsScreen = () => {
     }).start();
   };
 
+  // Functie om te wisselen tussen het tonen en verbergen van de thema's
   const toggleShowThemes = () => {
     setShowThemes(!showThemes);
+    // Start de animatie om het thema te tonen of te verbergen
     Animated.timing(animation, {
       toValue: showThemes ? 0 : 1,
       duration: 300,
@@ -56,16 +61,19 @@ const SettingsScreen = () => {
     }).start();
   };
 
+  // Interpolatie voor de schaal van de animatie
   const scale = animation.interpolate({
     inputRange: [0, 1],
     outputRange: [0.8, 1],
   });
 
+  // Interpolatie voor de transparantie van de animatie
   const opacity = animation.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
 
+  // Bepaal het huidige thema op basis van de achtergrondkleur en tekstkleur
   const currentThemeKey = Object.keys(themes).find(
     (key) =>
       themes[key].backgroundColor === theme.backgroundColor &&
@@ -74,23 +82,23 @@ const SettingsScreen = () => {
 
   const currentThemeName = currentThemeKey
     ? themes[currentThemeKey].name
-    : "Unknown";
+    : "Onbekend"; // Toon 'Onbekend' als het thema niet herkend wordt
 
   return (
     <View
       style={[styles.container, { backgroundColor: theme.backgroundColor }]}
     >
-      {isAuthenticated ? (
+      {isAuthenticated ? ( // Controleer of de gebruiker geauthenticeerd is
         <>
           <TouchableOpacity
             style={[
               styles.selectThemeButton,
               { backgroundColor: theme.buttonColor },
             ]}
-            onPress={toggleShowThemes}
+            onPress={toggleShowThemes} // Toon of verberg de beschikbare thema's
           >
             <Text style={[styles.buttonText, { color: theme.buttonTextColor }]}>
-              {`${currentThemeName}`}
+              {`Huidig Thema: ${currentThemeName}`}
             </Text>
           </TouchableOpacity>
           <Animated.View
@@ -110,9 +118,9 @@ const SettingsScreen = () => {
                   style={[
                     styles.themeSquare,
                     theme.backgroundColor === themes[key].backgroundColor &&
-                      styles.selectedTheme,
+                      styles.selectedTheme, // Geef een rand aan het geselecteerde thema
                   ]}
-                  onPress={() => handleThemeChange(key)}
+                  onPress={() => handleThemeChange(key)} // Wissel naar het geselecteerde thema
                 >
                   {themes[key].colors.map((color, index) => (
                     <View
@@ -132,7 +140,7 @@ const SettingsScreen = () => {
         </>
       ) : (
         <Text style={[styles.text, { color: theme.textColor }]}>
-          Authentication required to change settings.
+          Authenticatie vereist om instellingen te wijzigen.
         </Text>
       )}
     </View>
@@ -163,7 +171,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   scrollContainer: {
-    height: 120, // Set a fixed height to prevent layout issues
+    height: 120, // Stel een vaste hoogte in om layoutproblemen te voorkomen
   },
   scrollView: {
     flexDirection: "row",
